@@ -1,4 +1,4 @@
-package com.test.other.demo.contoller;
+package com.test.pulsar.contoller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

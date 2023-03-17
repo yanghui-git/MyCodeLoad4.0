@@ -13,6 +13,13 @@
         <!--时序数据库taos-->
         <module>databse-taos</module>
 
+        <!--一些简单demo-->
+        <module>other-demo</module>
+
+        <!--消息中间件Pulsar-->
+        <module>Pulsar</module>
+
+
     </modules>
 
 

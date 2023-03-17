@@ -1,0 +1,3 @@
+server:
+  name: pulsar
+  port: 7777

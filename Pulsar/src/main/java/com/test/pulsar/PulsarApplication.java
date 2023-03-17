@@ -1,13 +1,15 @@
-package com.test.other.demo;
+package com.test.pulsar;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+
 @SpringBootApplication
-public class OtherDemoApplication {
+public class PulsarApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(OtherDemoApplication.class, args);
+
+        SpringApplication.run(PulsarApplication.class, args);
     }
 
 }
