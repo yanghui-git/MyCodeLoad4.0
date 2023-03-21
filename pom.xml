@@ -19,6 +19,9 @@
         <!--消息中间件Pulsar-->
         <module>Pulsar</module>
 
+        <!--poi生成图表-->
+        <module>poi-demo</module>
+
 
     </modules>
 
