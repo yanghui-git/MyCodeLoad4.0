@@ -1,4 +1,4 @@
-package com.example.demo.other;
+package com.example.demo.other.poi;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -6,16 +6,19 @@ import java.io.IOException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xddf.usermodel.*;
+import org.apache.poi.xddf.usermodel.PresetColor;
+import org.apache.poi.xddf.usermodel.XDDFColor;
+import org.apache.poi.xddf.usermodel.XDDFSolidFillProperties;
+import org.apache.poi.xddf.usermodel.chart.AxisCrossBetween;
 import org.apache.poi.xddf.usermodel.chart.AxisPosition;
+import org.apache.poi.xddf.usermodel.chart.BarDirection;
 import org.apache.poi.xddf.usermodel.chart.ChartTypes;
 import org.apache.poi.xddf.usermodel.chart.LegendPosition;
-import org.apache.poi.xddf.usermodel.chart.MarkerStyle;
+import org.apache.poi.xddf.usermodel.chart.XDDFBarChartData;
 import org.apache.poi.xddf.usermodel.chart.XDDFCategoryAxis;
 import org.apache.poi.xddf.usermodel.chart.XDDFChartLegend;
 import org.apache.poi.xddf.usermodel.chart.XDDFDataSource;
 import org.apache.poi.xddf.usermodel.chart.XDDFDataSourcesFactory;
-import org.apache.poi.xddf.usermodel.chart.XDDFLineChartData;
 import org.apache.poi.xddf.usermodel.chart.XDDFNumericalDataSource;
 import org.apache.poi.xddf.usermodel.chart.XDDFValueAxis;
 import org.apache.poi.xssf.usermodel.XSSFChart;
@@ -25,17 +28,16 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
- * POI EXCEL 图表-折线图
+ * POI EXCEL 图表-柱状图
  */
-public class ApachePoiLineChart4 {
+public class ApachePoiBarChart {
 
     public static void main(String[] args) throws IOException {
-        XSSFWorkbook wb = new XSSFWorkbook("/Users/hui.yang/Desktop/excel演示/poi/生成图表/曲线图.xlsx");
+        XSSFWorkbook wb = new XSSFWorkbook();
         String sheetName = "Sheet1";
         FileOutputStream fileOut = null;
         try {
-            XSSFSheet sheet = wb.getSheet("汇总");
-           /*
+            XSSFSheet sheet = wb.createSheet(sheetName);
             // 第一行，国家名称
             Row row = sheet.createRow(0);
             Cell cell = row.createCell(0);
@@ -115,17 +117,17 @@ public class ApachePoiLineChart4 {
             cell = row.createCell(5);
             cell.setCellValue(22475821.29);
             cell = row.createCell(6);
-            cell.setCellValue(22475821.29);*/
+            cell.setCellValue(22475821.29);
 
             // 创建一个画布
             XSSFDrawing drawing = sheet.createDrawingPatriarch();
             // 前四个默认0，[0,5]：从0列5行开始;[7,26]:到7列26行结束
             // 默认宽度(14-8)*12
-            XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 17, 13, 26, 25);
+            XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, 5, 7, 26);
             // 创建一个chart对象
             XSSFChart chart = drawing.createChart(anchor);
             // 标题
-            chart.setTitleText("隐患整改率--yh测试");
+            chart.setTitleText("地区排名前七的国家");
             // 标题覆盖
             chart.setTitleOverlay(false);
 
@@ -135,94 +137,55 @@ public class ApachePoiLineChart4 {
 
             // 分类轴标(X轴),标题位置
             XDDFCategoryAxis bottomAxis = chart.createCategoryAxis(AxisPosition.BOTTOM);
-            //bottomAxis.setTitle("管辖单位");
+            bottomAxis.setTitle("国家");
             // 值(Y轴)轴,标题位置
             XDDFValueAxis leftAxis = chart.createValueAxis(AxisPosition.LEFT);
-            //leftAxis.setTitle("隐患整改率");
+            leftAxis.setTitle("面积和人口");
 
-            //设置X轴 从0开始
-            XDDFDataSource<String> countries = XDDFDataSourcesFactory.fromStringCellRange(sheet, new CellRangeAddress(1, 25, 0, 0));
-
-            //设置Y轴
-            XDDFNumericalDataSource<Double> area = XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(1, 25, 11, 11));
+            // CellRangeAddress(起始行号，终止行号， 起始列号，终止列号）
+            // 分类轴标(X轴)数据，单元格范围位置[0, 0]到[0, 6]
+            XDDFDataSource<String> countries = XDDFDataSourcesFactory.fromStringCellRange(sheet, new CellRangeAddress(0, 0, 0, 6));
+            // XDDFCategoryDataSource countries = XDDFDataSourcesFactory.fromArray(new String[] {"俄罗斯","加拿大","美国","中国","巴西","澳大利亚","印度"});
+            // 数据1，单元格范围位置[1, 0]到[1, 6]
+            XDDFNumericalDataSource<Double> area = XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(1, 1, 0, 6));
             // XDDFNumericalDataSource<Integer> area = XDDFDataSourcesFactory.fromArray(new Integer[] {17098242,9984670,9826675,9596961,8514877,7741220,3287263});
 
-            // 数据1，单元格范围位置[2, 0]到[2, 6]
-            // XDDFNumericalDataSource<Double> population = XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(2, 2, 0, 6));
+            // 数据2，单元格范围位置[2, 0]到[2, 6]
+            XDDFNumericalDataSource<Double> population = XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(2, 2, 0, 6));
 
-            // LINE：折线图，
-            XDDFLineChartData data = (XDDFLineChartData) chart.createData(ChartTypes.LINE, bottomAxis, leftAxis);
+            // bar：条形图，
+            XDDFBarChartData bar = (XDDFBarChartData) chart.createData(ChartTypes.BAR, bottomAxis, leftAxis);
 
-            // 图表加载数据，折线1
-            XDDFLineChartData.Series series1 = (XDDFLineChartData.Series) data.addSeries(countries, area);
-            // 折线图例标题
-            series1.setTitle("隐患整改率", null);
-            // 设置生成是曲线还是直线 true直线
-            series1.setSmooth(true);
-            // 设置标记大小
-            series1.setMarkerSize((short) 3);
-            // 设置标记样式，星星  设置曲线上标记的样式
-            series1.setMarkerStyle(MarkerStyle.CIRCLE);
-           // series1.setFillProperties(new XDDFSolidFillProperties());
+            leftAxis.setCrossBetween(AxisCrossBetween.BETWEEN);
+            // 设置为可变颜色
+            bar.setVaryColors(true);
+            // 条形图方向，纵向/横向：纵向
+            bar.setBarDirection(BarDirection.COL);
 
-            // 图表加载数据，折线2
-   /*         XDDFLineChartData.Series series2 = (XDDFLineChartData.Series) data.addSeries(countries, population);
-            // 折线图例标题
+            // 图表加载数据，条形图1
+            XDDFBarChartData.Series series1 = (XDDFBarChartData.Series) bar.addSeries(countries, area);
+            // 条形图例标题
+            series1.setTitle("面积", null);
+            XDDFSolidFillProperties fill = new XDDFSolidFillProperties(XDDFColor.from(PresetColor.RED));
+            // 条形图，填充颜色
+            series1.setFillProperties(fill);
+
+            // 图表加载数据，条形图2
+            XDDFBarChartData.Series series2 = (XDDFBarChartData.Series) bar.addSeries(countries, population);
+            // 条形图例标题
             series2.setTitle("人口", null);
-            // 曲线
-            series2.setSmooth(true);
-            // 设置标记大小
-            series2.setMarkerSize((short) 6);
-            // 设置标记样式，正方形
-            series2.setMarkerStyle(MarkerStyle.SQUARE);*/
-
-            // 图表加载数据，平均线3
-            // 数据1，单元格范围位置[2, 0]到[2, 6]
-           /* XDDFNumericalDataSource<Double> population3 = XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(3, 3, 0, 6));
-            XDDFLineChartData.Series series3 = (XDDFLineChartData.Series) data.addSeries(countries, population3);
-            // 折线图例标题
-            series3.setTitle("面积平均", null);
-            // 直线
-            series3.setSmooth(false);
-            // 设置标记大小
-            // series3.setMarkerSize((short) 3);
-            // 设置标记样式，正方形
-            series3.setMarkerStyle(MarkerStyle.NONE);
-            // 折线图LineChart
-            // XDDFSolidFillProperties fill = new XDDFSolidFillProperties(XDDFColor.from(PresetColor.CHARTREUSE));
-            XDDFLineProperties line = new XDDFLineProperties();
-            // line.setFillProperties(fill);
-            // line.setLineCap(LineCap.ROUND);
-            line.setPresetDash(new XDDFPresetLineDash(PresetLineDash.DOT));// 虚线
-            // XDDFShapeProperties shapeProperties = new XDDFShapeProperties();
-            // shapeProperties.setLineProperties(line);
-            // series3.setShapeProperties(shapeProperties);
-            series3.setLineProperties(line);
-
-            // 图表加载数据，平均线3
-            // 数据1，单元格范围位置[2, 0]到[2, 6]
-            XDDFNumericalDataSource<Double> population4 = XDDFDataSourcesFactory.fromNumericCellRange(sheet, new CellRangeAddress(4, 4, 0, 6));
-            XDDFLineChartData.Series series4 = (XDDFLineChartData.Series) data.addSeries(countries, population4);
-            // 折线图例标题
-            series4.setTitle("人口平均", null);
-            // 直线
-            series4.setSmooth(false);
-            // 设置标记大小
-            // series4.setMarkerSize((short) 3);
-            // 设置标记样式，正方形
-            series4.setMarkerStyle(MarkerStyle.NONE);
-            XDDFLineProperties line4 = new XDDFLineProperties();
-            line4.setPresetDash(new XDDFPresetLineDash(PresetLineDash.DOT));// 虚线
-            series4.setLineProperties(line);*/
+            XDDFSolidFillProperties fill2 = new XDDFSolidFillProperties(XDDFColor.from(PresetColor.BLUE));
+            // 条形图，填充颜色
+            series2.setFillProperties(fill2);
 
             // 绘制
-            chart.plot(data);
+            chart.plot(bar);
 
             // 打印图表的xml
-             System.out.println(chart.getCTChart());
+            // System.out.println(chart.getCTChart());
 
             // 将输出写入excel文件
-            String filename = "/Users/hui.yang/Desktop/excel演示/poi/生成图表/演示生成曲线图.xlsx";
+            String filename = "排行榜前七的国家.xlsx";
             fileOut = new FileOutputStream(filename);
             wb.write(fileOut);
         } catch (Exception e) {

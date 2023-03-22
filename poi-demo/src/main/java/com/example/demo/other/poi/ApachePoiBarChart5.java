@@ -1,4 +1,4 @@
-package com.example.demo.other;
+package com.example.demo.other.poi;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
