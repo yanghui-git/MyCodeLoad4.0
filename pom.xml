@@ -20,6 +20,9 @@
         <module>Pulsar</module>
 
         <!--poi生成图表-->
+        <module>flowable-test</module>
+
+        <!--poi生成图表-->
         <module>poi-demo</module>
 
 
