@@ -1,9 +1,11 @@
-package org.test.flowable;
+package org.test.flowable.controller;
 
 import org.flowable.engine.delegate.DelegateExecution;
 import org.flowable.engine.delegate.JavaDelegate;
 
-
+/**
+ * 拒绝 - 回调接口
+ */
 public class AskForLeaveFail implements JavaDelegate {
 
     @Override

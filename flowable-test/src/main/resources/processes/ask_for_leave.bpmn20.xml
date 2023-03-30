@@ -29,8 +29,11 @@
         <sequenceFlow id="rejectFlow" name="拒绝" sourceRef="managerJudgeTask" targetRef="sendMail">
             <conditionExpression xsi:type="tFormalExpression"><![CDATA[${checkResult=='拒绝'}]]></conditionExpression>
         </sequenceFlow>
+
+        <!--配置拒绝的回调接口 比如发送邮件通知等-->
         <serviceTask id="sendMail" flowable:exclusive="true" name="发送失败提示" isForCompensation="true"
-                     flowable:class="org.test.flowable.AskForLeaveFail"/>
+                     flowable:class="org.test.flowable.controller.AskForLeaveFail"/>
+
         <sequenceFlow id="endFlow" sourceRef="sendMail" targetRef="askForLeaveFail"/>
         <endEvent id="askForLeaveFail" name="请假失败"/>
         <sequenceFlow id="zuzhangTask_zuzhangJudeTask" sourceRef="zuzhangTask" targetRef="zuzhangJudeTask"/>

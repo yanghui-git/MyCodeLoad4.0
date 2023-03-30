@@ -9,13 +9,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.test.flowable.HelloController;
+import org.test.flowable.controller.HelloController;
+import org.test.flowable.FlowableApplication;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@SpringBootTest
+@SpringBootTest(classes = FlowableApplication.class)
 class FlowableApplicationTests {
 
     private static final Logger logger = LoggerFactory.getLogger(HelloController.class);
@@ -116,7 +117,27 @@ class FlowableApplicationTests {
     }
 
     /**
+     * 模拟出现错误情况下,网关无法选择,看看怎么处理
+     * 直接报错 : No outgoing sequence flow of the exclusive gateway 'zuzhangJudeTask' could be selected for continuing the process
+     * 回事务回滚
+     */
+    @Test
+    void zuZhangReject2() {
+        List<Task> list = taskService.createTaskQuery().taskAssignee(zuzhangId).orderByTaskId().desc().list();
+        for (Task task : list) {
+            logger.info("组长 {} 在审批 {} 任务", task.getAssignee(), task.getId());
+            Map<String, Object> map = new HashMap();
+            //组长审批的时候，如果是拒绝，就不需要指定经理的 id
+            //模拟错误
+            map.put("checkResult", "哈哈哈哈侧拉");
+            taskService.complete(task.getId(), map);
+        }
+    }
+
+    /**
      * 经理查看自己的任务
+     *
+     * 注意是查看 正在进行的任务
      */
     @Test
     void managerTaskList() {

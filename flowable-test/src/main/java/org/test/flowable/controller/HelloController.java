@@ -1,4 +1,4 @@
-package org.test.flowable;
+package org.test.flowable.controller;
 
 import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.engine.*;
@@ -7,6 +7,7 @@ import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.image.ProcessDiagramGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +20,7 @@ import java.util.List;
  * 查看流程图具体到哪一步了
  */
 @RestController
+@RequestMapping
 public class HelloController {
 
     @Autowired
