@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    username: root
+    password: 1234
+    url: jdbc:mysql://1.116.157.159:3306/flowable-test?serverTimezone=Asia/Shanghai&useSSL=false

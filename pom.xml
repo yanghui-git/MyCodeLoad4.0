@@ -19,7 +19,7 @@
         <!--消息中间件Pulsar-->
         <module>Pulsar</module>
 
-        <!--poi生成图表-->
+        <!--流程引擎flowable-->
         <module>flowable-test</module>
 
         <!--poi生成图表-->
