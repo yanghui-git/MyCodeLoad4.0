@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef" exporter="Flowable Open Source Modeler" exporterVersion="6.7.2">
-  <process id="holidayRequest" name="holidayRequest" isExecutable="true">
+  <process id="holidayRequestHQ" name="holidayRequestHQ" isExecutable="true">
     <startEvent id="startEvent1" flowable:formFieldValidation="true"></startEvent>
     <userTask id="sid-1A1AA050-1900-4CAD-A277-18BD97BD61FB" flowable:assignee="${userTask}" flowable:formFieldValidation="true">
       <extensionElements>
@@ -14,8 +14,8 @@
     <sequenceFlow id="sid-2597F958-175E-4F9F-9BEA-6E89D6C5B0A4" sourceRef="startEvent1" targetRef="sid-1A1AA050-1900-4CAD-A277-18BD97BD61FB"></sequenceFlow>
     <exclusiveGateway id="sid-A04AF65B-D8B2-4F30-BFD5-7F2C9FCEFA51"></exclusiveGateway>
     <sequenceFlow id="sid-7CD68B1D-C2CE-4A1A-ABA7-216D0F80BDD8" sourceRef="sid-1A1AA050-1900-4CAD-A277-18BD97BD61FB" targetRef="sid-A04AF65B-D8B2-4F30-BFD5-7F2C9FCEFA51"></sequenceFlow>
-    <serviceTask id="sid-4412386C-15E9-40C6-AB6B-66919A8D1302" flowable:class="org.test.flowable.controller.HQSuccess"></serviceTask>
-    <serviceTask id="sid-903B79F3-2020-419E-AD42-215C2E26C784" flowable:class="org.test.flowable.controller.HQFail"></serviceTask>
+    <serviceTask id="sid-4412386C-15E9-40C6-AB6B-66919A8D1302" flowable:class="org.test.flowable.controller.NOHQSuccess"></serviceTask>
+    <serviceTask id="sid-903B79F3-2020-419E-AD42-215C2E26C784" flowable:class="org.test.flowable.controller.NOHQFail"></serviceTask>
     <endEvent id="sid-FE27FA28-2B2F-4572-A2D6-BFE83EBA9370"></endEvent>
     <sequenceFlow id="sid-474E5177-9B1A-4757-877F-5A0DA72B0A59" sourceRef="sid-903B79F3-2020-419E-AD42-215C2E26C784" targetRef="sid-FE27FA28-2B2F-4572-A2D6-BFE83EBA9370"></sequenceFlow>
     <sequenceFlow id="sid-85E7B515-734C-4E46-9889-D74FC5A04891" sourceRef="sid-A04AF65B-D8B2-4F30-BFD5-7F2C9FCEFA51" targetRef="sid-903B79F3-2020-419E-AD42-215C2E26C784">
@@ -27,8 +27,8 @@
     <endEvent id="sid-92DA7300-EFD1-437B-96D5-EAADAFABC507"></endEvent>
     <sequenceFlow id="sid-E882A39F-9E88-4BB8-B7CE-F975B6ADC862" sourceRef="sid-4412386C-15E9-40C6-AB6B-66919A8D1302" targetRef="sid-92DA7300-EFD1-437B-96D5-EAADAFABC507"></sequenceFlow>
   </process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_holidayRequest">
-    <bpmndi:BPMNPlane bpmnElement="holidayRequest" id="BPMNPlane_holidayRequest">
+  <bpmndi:BPMNDiagram id="BPMNDiagram_holidayRequestHQ">
+    <bpmndi:BPMNPlane bpmnElement="holidayRequestHQ" id="BPMNPlane_holidayRequestHQ">
       <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
         <omgdc:Bounds height="30.0" width="30.0" x="100.0" y="163.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>

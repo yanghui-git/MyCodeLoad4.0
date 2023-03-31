@@ -21,19 +21,15 @@ import org.test.flowable.controller.HelloController;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
 /**
- * 测试会签
- * <p>
- * http://localhost:8001/pic?processId=8bdcfac0-cfa2-11ed-a6e2-4ed2648c1dc4  获取当前执行流程图
- * <p>
- * https://juejin.cn/post/7140903040562757668#comment
- * <p>
- * ${nrOfCompletedInstances == nrOfInstances}
- * <p>
- * 完成条件（多实例）：这里我配置的值是 ${nrOfCompletedInstances== nrOfInstances}，涉及到两个变量，nrOfCompletedInstances 这个表示已经完成审批的实例个数，nrOfInstances 则表示总共的实例个数，也就是当完成审批的实例个数等于总的实例个数的时候，这个节点就算执行完了，换句话说，也就是 zhangsan 将请假申请提交给 javaboy 和 lisi，必须这两个人都审批了，这个节点才算执行完。另外这里还有一个内置的变量可用就是 nrOfActiveInstances 表示未完成审批的实例个数，只不过在本案例中没有用到这个内置变量。
+ * 测试 非会签 ${nrOfCompletedInstances >= 1}
+ *
+ * 表示只要有一个同意或者拒绝，这个 UserTask 就算过了。
+ *
  */
 @SpringBootTest(classes = FlowableApplication.class)
-class FlowableApplicationTests2 {
+class FlowableApplicationTests3 {
 
     private static final Logger logger = LoggerFactory.getLogger(HelloController.class);
 
@@ -55,7 +51,7 @@ class FlowableApplicationTests2 {
         Map<String, Object> variables = new HashMap();
         //要会签的用户列表 zuzhang jingli dongshizhang
         variables.put("userTasks", Arrays.asList(new String[]{"zuzhang", "jingli", "dongshizhang"}));
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("holidayRequest", variables);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("holidayRequestHQ", variables);
         logger.info("创建请假流程 processId：{}", processInstance.getId());
     }
 
@@ -161,7 +157,7 @@ class FlowableApplicationTests2 {
             String endId = endNodes.get(0).getId();
             //2、执行终止
             List<Execution> executions = runtimeService.createExecutionQuery().parentId(processInstanceId).list();
-            List<String> executionIds = new ArrayList<String>();
+            List<String> executionIds = new ArrayList<>();
             executions.forEach(execution -> executionIds.add(execution.getId()));
             runtimeService.createChangeActivityStateBuilder().moveExecutionsToSingleActivityId(executionIds, endId).changeState();
             // log.info("终止processInstanceId:{}胜利", processInstanceId);
