@@ -61,7 +61,6 @@ public class PSConsumerMultiTopic {
                 .topicsPattern(allTopicsInNamespace)
                 .messageListener(myMessageListener)
                 .subscribe();
-
         System.in.read();
     }
 
@@ -120,7 +119,6 @@ public class PSConsumerMultiTopic {
 
         ConsumerBuilder consumerBuilder = client.newConsumer()
                 .subscriptionName("consumer-3");
-
         List<String> topics = Arrays.asList(
                 "topic1",
                 "topic2"
@@ -129,7 +127,6 @@ public class PSConsumerMultiTopic {
                 .topics(topics)
                 .messageListener(myMessageListener)
                 .subscribe();
-        //
         System.in.read();
     }
 
@@ -216,14 +213,12 @@ public class PSConsumerMultiTopic {
         Map<String, Object> config1 = new HashMap<>();
         config1.put("producerName", "produce-demo1");
         config1.put("topicName", "topic1");
-
         Producer producer1 = client
                 .newProducer()
                 .loadConf(config1)
                 .create();
 
         producer1.send(("test1 --- " + new Date()).getBytes());
-
         Map<String, Object> config2 = new HashMap<>();
         config2.put("producerName", "produce-demo2");
         config2.put("topicName", "topic2");
@@ -234,9 +229,34 @@ public class PSConsumerMultiTopic {
                 .create();
 
         producer2.send(("test2 --- " + new Date()).getBytes());
-
         System.in.read();
     }
 
+
+    /**
+     * Multi-topic subscriptions
+     * 多主题订阅
+     * 正则表达式,订阅所有以1结束的topic
+     *
+     */
+    @Test
+    public void testConsumer222() throws IOException {
+        MessageListener myMessageListener = (consumer, msg) -> {
+            try {
+                System.out.println("Message received: " + new String(msg.getData()));
+                consumer.acknowledge(msg);
+            } catch (Exception e) {
+                consumer.negativeAcknowledge(msg);
+            }
+        };
+        ConsumerBuilder consumerBuilder = client.newConsumer()
+                .subscriptionName("consumer-1");
+        Pattern allTopicsInNamespace = Pattern.compile("public/default/.*1");
+        Consumer allTopicsConsumer = consumerBuilder
+                .topicsPattern(allTopicsInNamespace)
+                .messageListener(myMessageListener)
+                .subscribe();
+        System.in.read();
+    }
 
 }

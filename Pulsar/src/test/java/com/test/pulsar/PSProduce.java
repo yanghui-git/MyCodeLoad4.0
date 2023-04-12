@@ -50,12 +50,12 @@ public class PSProduce {
 
     /**
      * shard模式 默认情况下多个生产者可以发布消息到同一个 Topic
-     *//*
-
+     */
     @Test
-    public void testProducer() throws IOException {
+    public void testProducer222() throws IOException {
         Producer<String> stringProducer = client
                 .newProducer(Schema.STRING)
+                .accessMode(ProducerAccessMode.Shared)
                 .topic("访问模式-shared")
                 .producerName("produce-demo1")
                 .create();
@@ -63,6 +63,7 @@ public class PSProduce {
 
         Producer<String> stringProducer2 = client
                 .newProducer(Schema.STRING)
+                .accessMode(ProducerAccessMode.Shared)
                 .topic("访问模式-shared")
                 // Producer with name 'produce-demo1' is already connected to topic
                 //注意生产者名称不能重复
@@ -72,7 +73,37 @@ public class PSProduce {
 
         System.in.read();
     }
-*/
+
+
+    /**
+     * 演示生产者名称重复,发送报错
+     */
+    @Test
+    public void testProducer1() throws IOException {
+        Producer<String> stringProducer = client
+                .newProducer(Schema.STRING)
+                .topic("访问模式-shared")
+                .producerName("produce-demo1")
+                .create();
+        stringProducer.send("My message 1 " + "发送消息时间" + new Date());
+        System.in.read();
+    }
+
+    /**
+     * 演示生产者名称重复,发送报错
+     */
+    @Test
+    public void testProducer11() throws IOException {
+        Producer<String> stringProducer = client
+                .newProducer(Schema.STRING)
+                .topic("访问模式-shared")
+                .producerName("produce-demo1")
+                .create();
+        stringProducer.send("My message 1 " + "发送消息时间" + new Date());
+        System.in.read();
+    }
+
+
    /* @Test
     public void testConsumer2() throws IOException {
         MessageListener myMessageListener = (consumer, msg) -> {
@@ -99,9 +130,9 @@ public class PSProduce {
      * Exclusive 要求生产者以独占模式访问 Topic，在此模式下 如果 Topic 已经有了生产者，那么其他生产者在连接就会失败报错。
      * <p>
      * "Topic has an existing exclusive producer: standalone-0-12
-     *//*
+     */
     @Test
-    public void testProducer() throws IOException {
+    public void testProducer6() throws IOException {
         Producer<String> stringProducer = client
                 .newProducer(Schema.STRING)
                 .topic("访问模式-Exclusive")
@@ -124,7 +155,7 @@ public class PSProduce {
 
         System.in.read();
     }
-*/
+
     @Test
     public void testConsumer2() throws IOException {
         MessageListener myMessageListener = (consumer, msg) -> {
@@ -162,7 +193,6 @@ public class PSProduce {
                 .producerName("produce-demo1")
                 .create();
 
-
         new Thread() {
             @SneakyThrows
             @Override
@@ -185,11 +215,6 @@ public class PSProduce {
                 .producerName("produce-demo2")
                 .create();
 
-        //模拟生产者1 被释放后,重新拿到独占,发送消息
-        //Thread.sleep(10000);
-
-//        stringProducer2.send("My message 2 " + "发送消息时间" + new Date());
-
         //假设有10条消息在未获取 独占前,均未被发送,模拟来看一下,获取独占后, 这10条消息会进行发送吗 ？ 会
         for (int i = 0; i < 10; i++) {
             stringProducer2.send("My message 2 " + "发送消息时间" + new Date());
@@ -197,5 +222,44 @@ public class PSProduce {
         System.in.read();
     }
 
+
+    /**
+     * WaitForExclusive
+     * <p>
+     * 如果主题已经连接了生产者，则将当前生产者挂起，直到生产者获得了 Exclusive 访问权限。
+     * <p>
+     * 也就是存在相同的生产者,不会报错,当然也不会发送消息,     获取到独占后,会将未获取到独占时的消息进行发送！！！
+     */
+    @Test
+    public void testProducer2() throws Exception {
+        Producer<String> stringProducer = client
+                .newProducer(Schema.STRING)
+                .topic("访问模式-WaitForExclusive")
+                //设置访问模式 默认shared
+                .accessMode(ProducerAccessMode.WaitForExclusive)
+                .producerName("produce-demo1")
+                .create();
+        stringProducer.send("My message 1 " + "发送消息时间" + new Date());
+        System.in.read();
+    }
+
+    /**
+     * WaitForExclusive
+     */
+    @Test
+    public void testProducer22() throws Exception {
+        Producer<String> stringProducer = client
+                .newProducer(Schema.STRING)
+                .topic("访问模式-WaitForExclusive")
+                //设置访问模式 默认shared
+                .accessMode(ProducerAccessMode.WaitForExclusive)
+                .producerName("produce-demo1")
+                .create();
+        //假设有10条消息在未获取 独占前,均未被发送,模拟来看一下,获取独占后, 这10条消息会进行发送吗 ？ 会
+        for (int i = 0; i < 10; i++) {
+            stringProducer.send("My message 2 " + "发送消息时间" + new Date());
+        }
+        System.in.read();
+    }
 
 }

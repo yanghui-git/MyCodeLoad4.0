@@ -134,18 +134,18 @@ public class PSConsumerNameSpace {
 
     /**
      * 报错
-     * 向租户sample 命名空间 namespace_test3  topic topic-haha1 发送消息
-     * 注意namespace需手动先创建好,否则会报错 olicies not found for sample/namespace_test3 namespace
+     * 向租户sample 命名空间 namespace_test4  topic topic-haha1 发送消息
+     * 注意namespace需手动先创建好,否则会报错 olicies not found for sample/namespace_test4 namespace
      */
-/*    @Test
-    public void testProduce3() throws Exception {
+    @Test
+    public void testProduce322() throws Exception {
         Producer<String> producer = client.newProducer(Schema.STRING)
-                .topic("persistent://sample/namespace_test3/topic-haha1")
+                .topic("persistent://sample/namespace_test4/topic-haha1")
                 .enableBatching(false)
                 .create();
         producer.send("向租户sample 命名空间 namespace_test2  topic topic-haha1 发送消息");
         System.in.read();
-    }*/
+    }
 
 
     /**

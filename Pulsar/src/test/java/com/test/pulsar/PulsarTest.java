@@ -1,5 +1,6 @@
 package com.test.pulsar;
 
+import com.alibaba.fastjson.JSON;
 import lombok.extern.java.Log;
 import org.apache.pulsar.client.api.*;
 import org.junit.Test;
@@ -9,7 +10,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * 简单发送-接收模式
@@ -76,8 +82,59 @@ public class PulsarTest {
                 .subscriptionName("my-subscription")
                 .messageListener(myMessageListener)
                 .subscribe();
-        //
+        System.out.println("监听器方式,不阻塞线程");
         System.in.read();
+    }
+
+
+    /**
+     * loadConf创建消费者
+     */
+    @Test
+    public void testConsumer222() throws IOException {
+        MessageListener myMessageListener = (consumer, msg) -> {
+            try {
+                System.out.println("Message received: " + new String(msg.getData()));
+                consumer.acknowledge(msg);
+            } catch (Exception e) {
+                consumer.negativeAcknowledge(msg);
+            }
+        };
+        Map<String, Object> config1 = new HashMap<>();
+        config1.put("subscriptionName", "consumer-demo1");
+        config1.put("topicNames", Arrays.asList(new String[]{"my-topic"}));
+
+        Consumer consumer = client
+                .newConsumer()
+                .loadConf(config1)
+                .messageListener(myMessageListener)
+                .subscribe();
+        System.out.println("loadConf方式");
+        System.in.read();
+    }
+
+    /**
+     * 创建消费者
+     */
+    @Test
+    public void testConsumer22() throws Exception{
+        Consumer consumer = client.newConsumer()
+                .topic("my-topic")
+                .subscriptionName("my-subscription")
+                .subscribe();
+        while (true) {
+            // Wait for a message
+            Message msg = consumer.receive();
+            try {
+                // Do something with the message
+                System.out.println("Message received: " + new String(msg.getData()));
+                // Acknowledge the message so that it can be deleted by the message broker
+                consumer.acknowledge(msg);
+            } catch (Exception e) {
+                // Message failed to process, redeliver later
+                consumer.negativeAcknowledge(msg);
+            }
+        }
     }
 
     /**
@@ -91,7 +148,38 @@ public class PulsarTest {
                 .producerName("produce-demo1")
                 .create();
         stringProducer.send("My message" + "发送消息时间" + new Date());
+    }
 
+
+    /**
+     * 测试同步发送
+     */
+    @Test
+    public void testProducer22() throws Exception {
+        Producer<String> stringProducer = client
+                .newProducer(Schema.STRING)
+                .topic("my-topic")
+                .producerName("produce-demo1")
+                .create();
+        MessageId messageId = stringProducer.send("My message" + "发送消息时间" + new Date());
+        System.out.println("消息同步发送---");
+        System.in.read();
+    }
+
+
+    /**
+     * 测试异步发送
+     */
+    @Test
+    public void testProducer222() throws Exception {
+        Producer<String> stringProducer = client
+                .newProducer(Schema.STRING)
+                .topic("my-topic")
+                .producerName("produce-demo1")
+                .create();
+        CompletableFuture<MessageId> messageIdCompletableFuture = stringProducer.sendAsync(
+                "异步发送的消息");
+        System.in.read();
     }
 
     /**
