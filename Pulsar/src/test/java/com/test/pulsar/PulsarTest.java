@@ -37,7 +37,7 @@ public class PulsarTest {
         Consumer consumer = client
                 .newConsumer()
                 .topic("my-topic")
-                .subscriptionName("my-subscription")
+                .subscriptionName("my-subscription2")
                 .consumerName("consumer-demo1")
                 .subscribe();
        /* int j = 1;*/
@@ -54,6 +54,7 @@ public class PulsarTest {
 
                 System.out.println("Message received: " + new String(msg.getData()));
 
+                //int i =1/0;
                 // Acknowledge the message so that it can be deleted by the message broker
                 consumer.acknowledge(msg);
             } catch (Exception e) {
@@ -72,8 +73,10 @@ public class PulsarTest {
         MessageListener myMessageListener = (consumer, msg) -> {
             try {
                 System.out.println("Message received: " + new String(msg.getData()));
+                int i =1/0;
                 consumer.acknowledge(msg);
             } catch (Exception e) {
+                log.info("消费失败"+e);
                 consumer.negativeAcknowledge(msg);
             }
         };
@@ -82,7 +85,7 @@ public class PulsarTest {
                 .subscriptionName("my-subscription")
                 .messageListener(myMessageListener)
                 .subscribe();
-        System.out.println("监听器方式,不阻塞线程");
+      //  System.out.println("监听器方式,不阻塞线程");
         System.in.read();
     }
 

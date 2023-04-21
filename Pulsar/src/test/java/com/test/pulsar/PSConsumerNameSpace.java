@@ -28,7 +28,7 @@ public class PSConsumerNameSpace {
     private PulsarClient client;
 
     /**
-     * 向租户public 命名空间 namespace_test1 topic2 topic-demo1 发送消息
+     * 向租户public 命名空间 namespace_test1 topic topic-demo1 发送消息
      */
     @Test
     public void testProduce1() throws Exception {
@@ -60,7 +60,6 @@ public class PSConsumerNameSpace {
                 .subscriptionName("my-subscription1")
                 .messageListener(myMessageListener)
                 .subscribe();
-
 
         MessageListener myMessageListener2 = (consumer2, msg) -> {
             try {
@@ -149,7 +148,7 @@ public class PSConsumerNameSpace {
 
 
     /**
-     * 默认是
+     * 默认是persistent://public/default/topic
      */
     @Test
     public void testProduce3() throws Exception {

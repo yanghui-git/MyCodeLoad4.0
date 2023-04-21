@@ -72,7 +72,7 @@ public class PSConsumerMultiTopic2 {
     public void testProducer() throws IOException {
         Producer<String> stringProducer = client
                 .newProducer(Schema.STRING)
-                .topic("topic5")
+                .topic("my-topic")
                 .producerName("produce-demo1")
                 .create();
         stringProducer.send("My message 5 " + "发送消息时间" + new Date(
@@ -186,6 +186,47 @@ public class PSConsumerMultiTopic2 {
 
 
     /**
+     * Failover故障转移 .subscriptionName("my-subscription") 可重复
+     * 一个节点挂掉了 剩余消息转移到另一个节点继续消费
+     * 注意这些消费模式 都是和subscriptionName("my-subscription") 订阅者名称相关
+     */
+    @Test
+    public void testConsumerFailover2() throws IOException {
+        MessageListener myMessageListener1 = (consumer, msg) -> {
+            try {
+                System.out.println("Message1 received: " + new String(msg.getData()));
+                int i =1/0;
+                consumer.acknowledge(msg);
+            } catch (Exception e) {
+                consumer.negativeAcknowledge(msg);
+            }
+        };
+        Consumer consumer = client.newConsumer()
+                .topic("my-topic")
+                .subscriptionName("my-subscription")
+                .subscriptionType(SubscriptionType.Failover)
+                .messageListener(myMessageListener1)
+                .subscribe();
+
+        MessageListener myMessageListener2 = (consumer2, msg) -> {
+            try {
+                System.out.println("Message2 received: " + new String(msg.getData()));
+                consumer.acknowledge(msg);
+            } catch (Exception e) {
+                consumer.negativeAcknowledge(msg);
+            }
+        };
+        Consumer consumer2 = client.newConsumer()
+                .topic("my-topic")
+                .subscriptionName("my-subscription")
+                .subscriptionType(SubscriptionType.Failover)
+                .messageListener(myMessageListener2)
+                .subscribe();
+
+        System.in.read();
+    }
+
+    /**
      * Shared模式
      * 多个使用者将能够使用相同的订阅名称，并且消息将根据连接的使用者之间的循环旋转进行分派。 在这种模式下，消费顺序不能保证。
      * 也就是消费者 1 消费者2 总共消费10条
@@ -196,6 +237,48 @@ public class PSConsumerMultiTopic2 {
         MessageListener myMessageListener1 = (consumer, msg) -> {
             try {
                 System.out.println("Message1 received: " + new String(msg.getData()));
+                consumer.acknowledge(msg);
+            } catch (Exception e) {
+                consumer.negativeAcknowledge(msg);
+            }
+        };
+        Consumer consumer = client.newConsumer()
+                .topic("my-topic")
+                .subscriptionName("my-subscription")
+                .subscriptionType(SubscriptionType.Shared)
+                .messageListener(myMessageListener1)
+                .subscribe();
+
+        MessageListener myMessageListener2 = (consumer2, msg) -> {
+            try {
+                System.out.println("Message2 received: " + new String(msg.getData()));
+                consumer.acknowledge(msg);
+            } catch (Exception e) {
+                consumer.negativeAcknowledge(msg);
+            }
+        };
+        Consumer consumer2 = client.newConsumer()
+                .topic("my-topic")
+                .subscriptionName("my-subscription")
+                .subscriptionType(SubscriptionType.Shared)
+                .messageListener(myMessageListener2)
+                .subscribe();
+
+        System.in.read();
+    }
+
+    /**
+     * Shared模式
+     * 多个使用者将能够使用相同的订阅名称，并且消息将根据连接的使用者之间的循环旋转进行分派。 在这种模式下，消费顺序不能保证。
+     * 也就是消费者 1 消费者2 总共消费10条
+     * 注意都是从 .subscriptionName("my-subscription") 视角
+     */
+    @Test
+    public void testShared2() throws IOException {
+        MessageListener myMessageListener1 = (consumer, msg) -> {
+            try {
+                System.out.println("Message1 received: " + new String(msg.getData()));
+                int i =1/0;
                 consumer.acknowledge(msg);
             } catch (Exception e) {
                 consumer.negativeAcknowledge(msg);
@@ -251,6 +334,44 @@ public class PSConsumerMultiTopic2 {
         MessageListener myMessageListener1 = (consumer, msg) -> {
             try {
                 System.out.println("Message1 received: " + new String(msg.getData()));
+                consumer.acknowledge(msg);
+            } catch (Exception e) {
+                consumer.negativeAcknowledge(msg);
+            }
+        };
+        Consumer consumer = client.newConsumer()
+                .topic("my-topic")
+                .subscriptionName("my-subscription")
+                .subscriptionType(SubscriptionType.Key_Shared)
+                .messageListener(myMessageListener1)
+                .subscribe();
+
+        MessageListener myMessageListener2 = (consumer2, msg) -> {
+            try {
+                System.out.println("Message2 received: " + new String(msg.getData()));
+                consumer.acknowledge(msg);
+            } catch (Exception e) {
+                consumer.negativeAcknowledge(msg);
+            }
+        };
+        Consumer consumer2 = client.newConsumer()
+                .topic("my-topic")
+                .subscriptionName("my-subscription")
+                .subscriptionType(SubscriptionType.Key_Shared)
+                .messageListener(myMessageListener2)
+                .subscribe();
+
+        System.in.read();
+    }
+
+
+    @Test
+    public void testKeyShared2() throws IOException {
+        MessageListener myMessageListener1 = (consumer, msg) -> {
+            try {
+                System.out.println("Message1 received: " + new String(msg.getData()));
+
+                int i=1/0;
                 consumer.acknowledge(msg);
             } catch (Exception e) {
                 consumer.negativeAcknowledge(msg);
