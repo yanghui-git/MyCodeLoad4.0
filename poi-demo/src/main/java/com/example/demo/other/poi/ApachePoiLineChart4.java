@@ -30,11 +30,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class ApachePoiLineChart4 {
 
     public static void main(String[] args) throws IOException {
-        XSSFWorkbook wb = new XSSFWorkbook("/Users/hui.yang/Desktop/excel演示/poi/生成图表/曲线图.xlsx");
+        XSSFWorkbook wb = new XSSFWorkbook("/Users/hui.yang/Desktop/1111.xlsx");
         String sheetName = "Sheet1";
         FileOutputStream fileOut = null;
         try {
-            XSSFSheet sheet = wb.getSheet("汇总");
+            XSSFSheet sheet = wb.getSheetAt(0);
            /*
             // 第一行，国家名称
             Row row = sheet.createRow(0);
@@ -222,7 +222,7 @@ public class ApachePoiLineChart4 {
              System.out.println(chart.getCTChart());
 
             // 将输出写入excel文件
-            String filename = "/Users/hui.yang/Desktop/excel演示/poi/生成图表/演示生成曲线图.xlsx";
+            String filename = "/Users/hui.yang/Desktop/2222.xlsx";
             fileOut = new FileOutputStream(filename);
             wb.write(fileOut);
         } catch (Exception e) {

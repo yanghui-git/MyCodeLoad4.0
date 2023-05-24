@@ -1,4 +1,4 @@
-package com.test.pulsar.report;
+package test.report;
 
 import com.spire.xls.*;
 import com.spire.xls.charts.ChartSerie;

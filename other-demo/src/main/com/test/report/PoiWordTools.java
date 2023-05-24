@@ -1,4 +1,4 @@
-package com.test.pulsar.report;
+package test.report;
 
 import java.io.IOException;
 import java.io.InputStream;
